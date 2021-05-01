@@ -22,12 +22,13 @@ namespace ARC
             ~Reception();
 
             void Start(); // Main loop
-            void GetOrder(); // Get pizza order
-            void ParseOrder(); // Parse pizza order
-            void PrintOrder(); // Print pizza order
+            std::string GetOrder(); // Get pizza order
+            void ParseOrder(const std::string &order); // Parse pizza order
+            void PrintOrder(const std::string &order); // Print pizza order
+            bool IsValidOrder(const std::string &order);
 
         private:
-            std::string _current_order;
+            
     };
 }
 

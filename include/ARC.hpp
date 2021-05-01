@@ -28,13 +28,6 @@ namespace ARC {
         XL = 8,
         XXL = 16
     };
-
-    static bool IsValidOrder(const std::string &order)
-    {
-        std::regex const pattern { R"([a-zA-Z]+ [S|M|L|XL|XXL]+ x[1-9][0-9]*(; [a-zA-Z]+ [S|M|L|XL|XXL]+ x[1-9][0-9]*)*)" };
-        return (std::regex_match(order, pattern));
-    }
-
 };
 
 #endif /* !ARC_HPP_ */
