@@ -1,0 +1,4 @@
+plazza
+*.o
+vgcore.*
+.vscode/settings.json
