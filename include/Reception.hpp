@@ -25,10 +25,9 @@ namespace ARC
             std::string GetOrder(); // Get pizza order
             void ParseOrder(const std::string &order); // Parse pizza order
             void PrintOrder(const std::string &order); // Print pizza order
-            bool IsValidOrder(const std::string &order);
+            bool IsValidOrder(const std::string &order); // Checks if order is valid with regex
 
         private:
-            
     };
 }
 
