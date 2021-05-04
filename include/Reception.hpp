@@ -33,12 +33,20 @@ namespace ARC
             void PrintOrder(const std::string &order); // Print pizza order
             bool IsValidOrder(const std::string &order); // Checks if order is valid with regex
 
+            ARC::PizzaType GetPizzaType(const std::string &type);
+            ARC::PizzaSize GetPizzaSize(const std::string &size);
+            size_t GetPizzaCount(const std::string &count);
+
+            ARC::Order GenerateOrder(const std::string &order, int id); // Generate an Order object for the kitchen to handle
+
+            void InitPizzaSizesList();
             void InitPizzaTypesList();
             int InitOrderId();
-            void SetOrderId();
+            void SetOrderId(int id);
 
         private:
             std::unordered_map<PizzaType, std::string> _pizzaTypes;
+            std::unordered_map<PizzaSize, std::string> _pizzaSizes;
             int _order_id;
     };
 }

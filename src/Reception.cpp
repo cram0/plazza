@@ -12,6 +12,7 @@ namespace ARC
     Reception::Reception()
     {
         InitPizzaTypesList();
+        InitPizzaSizesList();
         _order_id = InitOrderId();
     }
 
@@ -27,17 +28,19 @@ namespace ARC
             std::string order = GetOrder();
             if (IsValidOrder(order) && ParseFullOrder(order)) {
                 std::cout << "Your order is valid, sending it to our kitchens ..." << std::endl;
-                ARC::Order order();
+                ARC::Order handle_me = GenerateOrder(order, _order_id);
             }
             else {
                 std::cout << "Your order is not valid, check the menu and come back later you pussy" << std::endl;
             }
+            SetOrderId(++_order_id);
         }
     }
 
     std::string Reception::GetOrder()
     {
         std::string order;
+
         std::getline(std::cin, order);
 
         return (order);
@@ -78,7 +81,7 @@ namespace ARC
         size_t pos = 0;
 
         // If there is only one chunk in the order (Fantasia XL x1)
-        if (tmp.find(";") == std::string::npos) {
+        if (tmp.find(delim) == std::string::npos) {
             return (ParseIndividualOrder(tmp));
         }
 
@@ -100,6 +103,62 @@ namespace ARC
     {
         std::regex const pattern { R"([a-zA-Z]+ (S|M|L|XL|XXL) x[1-9][0-9]*(; [a-zA-Z]+ (S|M|L|XL|XXL) x[1-9][0-9]*)*)" };
         return (std::regex_match(order, pattern));
+    }
+
+    ARC::PizzaType Reception::GetPizzaType(const std::string &type)
+    {
+        std::string tmp_type = type;
+        ARC::to_lower(tmp_type);
+        for (const auto &pt : _pizzaTypes) {
+            std::string tmp_type_list = pt.second;
+            ARC::to_lower(tmp_type_list);
+            if (tmp_type_list.compare(tmp_type) == 0) { return (pt.first); }
+        }
+        return (ARC::Margarita);
+    }
+
+    ARC::PizzaSize Reception::GetPizzaSize(const std::string &size)
+    {
+        std::string tmp_size = size;
+        ARC::to_lower(tmp_size);
+        for (const auto &ps : _pizzaSizes) {
+            std::string tmp_size_list = ps.second;
+            ARC::to_lower(tmp_size_list);
+            if (tmp_size_list.compare(tmp_size) == 0) { return (ps.first); }
+        }
+        return (ARC::S);
+    }
+
+    size_t Reception::GetPizzaCount(const std::string &count)
+    {
+        std::string tmp = count.substr(1, count.length());
+
+        return (std::atoi(tmp.c_str()));
+    }
+
+    ARC::Order Reception::GenerateOrder(const std::string &order, int id)
+    {
+        ARC::Order ret(id);
+
+        std::vector<std::string> full_order = ARC::split(order, "; ");
+        for (auto p : full_order) {
+            std::vector<std::string> order_chunk = ARC::split(p, " ");
+            ARC::PizzaType ptype = GetPizzaType(order_chunk[0]);
+            ARC::PizzaSize psize = GetPizzaSize(order_chunk[1]);
+            size_t pcount        = GetPizzaCount(order_chunk[2]);
+            for (size_t i = 0; i < pcount; i++) { ret.addPizza(ARC::Pizza(ptype, psize)); }
+        }
+
+        return (ret);
+    }
+
+    void Reception::InitPizzaSizesList()
+    {
+        _pizzaSizes.emplace(std::make_pair(S, "S"));
+        _pizzaSizes.emplace(std::make_pair(M, "M"));
+        _pizzaSizes.emplace(std::make_pair(L, "L"));
+        _pizzaSizes.emplace(std::make_pair(XL, "XL"));
+        _pizzaSizes.emplace(std::make_pair(XXL, "XXL"));
     }
 
     void Reception::InitPizzaTypesList()
@@ -129,8 +188,12 @@ namespace ARC
         return (0);
     }
 
-    void Reception::SetOrderId()
+    void Reception::SetOrderId(int id)
     {
-        
+        std::ofstream file_out("res/order_id");
+        if (file_out.is_open()) {
+            file_out << std::to_string(id) << std::endl;
+            file_out.close();
+        }
     }
 }

@@ -3,3 +3,4 @@ plazza
 vgcore.*
 .vscode/settings.json
 res/order_id
+res/.init
