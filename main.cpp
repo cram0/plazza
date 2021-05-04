@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "plazza.hpp"
+#include "Plazza.hpp"
 #include "Reception.hpp"
 
 int main(int argc, char **argv)

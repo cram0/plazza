@@ -14,6 +14,7 @@
 
 namespace ARC {
 
+
     enum PizzaType {
         Regina = 1,
         Margarita = 2,
@@ -28,6 +29,10 @@ namespace ARC {
         XL = 8,
         XXL = 16
     };
+
+    void to_upper(std::string &string);
+    void to_lower(std::string &string);
+
 };
 
 #endif /* !ARC_HPP_ */

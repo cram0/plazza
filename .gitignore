@@ -2,3 +2,4 @@ plazza
 *.o
 vgcore.*
 .vscode/settings.json
+res/order_id

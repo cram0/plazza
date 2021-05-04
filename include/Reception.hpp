@@ -10,8 +10,11 @@
 
 #include <string>
 #include <iostream>
+#include <unordered_map>
+#include <fstream>
 
 #include "ARC.hpp"
+#include "Order.hpp"
 
 namespace ARC
 {
@@ -22,12 +25,21 @@ namespace ARC
             ~Reception();
 
             void Start(); // Main loop
-            std::string GetOrder(); // Get pizza order
-            void ParseOrder(const std::string &order); // Parse pizza order
+
+            std::string GetOrder(); // Get the line typed in by the user
+            bool IsValidPizzaType(const std::string &type); // Checks if pizza type exists
+            bool ParseIndividualOrder(const std::string &order); // Parse one chunk of the order
+            bool ParseFullOrder(const std::string &order); // Parse pizza order
             void PrintOrder(const std::string &order); // Print pizza order
             bool IsValidOrder(const std::string &order); // Checks if order is valid with regex
 
+            void InitPizzaTypesList();
+            int InitOrderId();
+            void SetOrderId();
+
         private:
+            std::unordered_map<PizzaType, std::string> _pizzaTypes;
+            int _order_id;
     };
 }
 
