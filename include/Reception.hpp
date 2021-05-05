@@ -33,11 +33,6 @@ namespace ARC
             bool ParseFullOrder(const std::string &order); // Parse pizza order
             void PrintOrder(const std::string &order); // Print pizza order
             bool IsValidOrder(const std::string &order); // Checks if order is valid with regex
-            void dispatchToKitchen(const ARC::Order &order); // Dispatch the ordre between kitchens
-
-            void checkKitchens(); // Check if there's kitchen with availables cooks
-            void openKitchen();
-            void closeKitchen();
 
             ARC::PizzaType GetPizzaType(const std::string &type);
             ARC::PizzaSize GetPizzaSize(const std::string &size);

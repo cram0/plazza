@@ -23,6 +23,8 @@ namespace ARC
 
     void Reception::Start()
     {
+        int pid = 1;
+
         while (42) {
             std::cout << ">> ";
             std::string order = GetOrder();
@@ -34,6 +36,14 @@ namespace ARC
                 std::cout << "Your order is not valid, check the menu and come back later you pussy" << std::endl;
             }
             SetOrderId(++_order_id);
+
+            // if (pid == 0) {// Process enfant
+            //     // Check dispo cuisine
+            // }
+            // else { // Parent process
+
+            // }
+
         }
     }
 
@@ -103,27 +113,6 @@ namespace ARC
     {
         std::regex const pattern { R"([a-zA-Z]+ (S|M|L|XL|XXL) x[1-9][0-9]*(; [a-zA-Z]+ (S|M|L|XL|XXL) x[1-9][0-9]*)*)" };
         return (std::regex_match(order, pattern));
-    }
-
-    void Reception::dispatchToKitchen(const ARC::Order &order)
-    {
-
-    }
-
-    void Reception::checkKitchens()
-    {
-        if (_kitchens.empty())
-            openKitchen();
-    }
-
-    void Reception::openKitchen()
-    {
-        _kitchens.emplace_back(new Kitchen());
-    }
-
-    void Reception::closeKitchen()
-    {
-
     }
 
     ARC::PizzaType Reception::GetPizzaType(const std::string &type)

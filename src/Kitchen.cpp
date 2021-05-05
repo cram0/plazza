@@ -11,37 +11,12 @@ namespace ARC
 {
     Kitchen::Kitchen()
     {
+
     }
 
     Kitchen::~Kitchen()
     {
-    }
-
-    void Kitchen::restock()
-    {
 
     }
 
-    bool Kitchen::canCookMore()
-    {
-        if (_cooks.empty())
-            return (false);
-
-        for (const auto &cook: _cooks) {
-            if (cook.first.isAvailable())
-                return (true);
-        }
-        return (false);
-    }
-
-    void Kitchen::receivePizza(ARC::PizzaType)
-    {
-        for (const auto &cook : _cooks) {
-            if (cook.first.isAvailable()) {
-                // Affect pizza to the thread
-                // Handle timer
-                return; // Quit when 1 pizza is affected, go to the next kitchen
-            }
-        }
-    }
 }

@@ -14,6 +14,7 @@
 
 #include "Pizza.hpp"
 #include "Cook.hpp"
+#include "Mutex.hpp"
 
 namespace ARC
 {
@@ -22,14 +23,9 @@ namespace ARC
             Kitchen();
             ~Kitchen();
 
-            void restock(); // Restock based on timer member
-            bool canCookMore(); /// Check if atleast one cook is available
-            void receivePizza(ARC::PizzaType); // Take order, read it, populate _pizzasOrdered
-
         private:
             std::vector<ARC::PizzaType> _pizzasOrdered;
-            std::vector<std::pair<Cook, std::thread>> _cooks;
-            std::mutex _mtx;
+            ARC::Mutex _mtx;
             int _restockTimer;
     };
 }
