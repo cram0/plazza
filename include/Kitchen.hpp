@@ -23,6 +23,7 @@ namespace ARC
             ~Kitchen();
 
             void restock(); // Restock based on timer member
+            bool canCookMore(); /// Check if atleast one cook is available
             void receivePizza(ARC::PizzaType); // Take order, read it, populate _pizzasOrdered
 
         private:

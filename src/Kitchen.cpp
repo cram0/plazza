@@ -22,6 +22,18 @@ namespace ARC
 
     }
 
+    bool Kitchen::canCookMore()
+    {
+        if (_cooks.empty())
+            return (false);
+
+        for (const auto &cook: _cooks) {
+            if (cook.first.isAvailable())
+                return (true);
+        }
+        return (false);
+    }
+
     void Kitchen::receivePizza(ARC::PizzaType)
     {
         for (const auto &cook : _cooks) {

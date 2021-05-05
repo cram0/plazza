@@ -114,15 +114,11 @@ namespace ARC
     {
         if (_kitchens.empty())
             openKitchen();
-
-        for (const auto &kitchen : _kitchens) {
-            
-        }
     }
 
     void Reception::openKitchen()
     {
-        
+        _kitchens.emplace_back(new Kitchen());
     }
 
     void Reception::closeKitchen()
