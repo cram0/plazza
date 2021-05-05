@@ -13,21 +13,24 @@
 #include <mutex>
 
 #include "Pizza.hpp"
+#include "Cook.hpp"
 
-class Kitchen {
-    public:
-        Kitchen();
-        ~Kitchen();
+namespace ARC
+{
+    class Kitchen {
+        public:
+            Kitchen();
+            ~Kitchen();
 
-        void restock(); // Restock based on timer member
-        void receiveOrder(); // Take order, read it, populate _pizzasOrdered
-        void dispatchPizzas(); // Loop on Cooks, dispatch pizzas
+            void restock(); // Restock based on timer member
+            void receivePizza(ARC::PizzaType); // Take order, read it, populate _pizzasOrdered
 
-    private:
-        std::vector<ARC::PizzaType> _pizzasOrdered;
-        std::mutex _mtx;
-        int _restockTimer;
-
-};
+        private:
+            std::vector<ARC::PizzaType> _pizzasOrdered;
+            std::vector<std::pair<Cook, std::thread>> _cooks;
+            std::mutex _mtx;
+            int _restockTimer;
+    };
+}
 
 #endif /* !KITCHEN_HPP_ */

@@ -105,6 +105,31 @@ namespace ARC
         return (std::regex_match(order, pattern));
     }
 
+    void Reception::dispatchToKitchen(const ARC::Order &order)
+    {
+
+    }
+
+    void Reception::checkKitchens()
+    {
+        if (_kitchens.empty())
+            openKitchen();
+
+        for (const auto &kitchen : _kitchens) {
+            
+        }
+    }
+
+    void Reception::openKitchen()
+    {
+        
+    }
+
+    void Reception::closeKitchen()
+    {
+
+    }
+
     ARC::PizzaType Reception::GetPizzaType(const std::string &type)
     {
         std::string tmp_type = type;
