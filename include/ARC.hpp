@@ -33,6 +33,7 @@ namespace ARC {
     void to_upper(std::string &string);
     void to_lower(std::string &string);
     std::vector<std::string> split(std::string str, std::string token);
+    int fork();
 
 };
 

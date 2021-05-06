@@ -18,6 +18,7 @@ namespace ARC
 
     Process::~Process()
     {
+        
     }
 
     pid_t Process::getPid() const

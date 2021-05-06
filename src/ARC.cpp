@@ -35,8 +35,8 @@ namespace ARC
                 result.push_back(str);
                 str = "";
             }
+        }
+        return result;
     }
-    return result;
-}
 
 } // namespace ARC
