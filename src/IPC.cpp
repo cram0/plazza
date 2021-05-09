@@ -50,11 +50,19 @@ namespace ARC
         return (tmp);
     }
 
+    /*
+    * Read a fifo file then sends the result in a string
+    * If no id is given, it automatically reads the reception file
+    */
     std::string IPC::ReadFifo(int id)
     {
         int tmp;
         char buffer[255] = { 0 };
-        std::string filename = "res/kitchen" + std::to_string(id);
+        std::string filename;
+        if (id == -1)
+            filename = "res/reception";
+        else
+            filename = "res/kitchen" + std::to_string(id);
 
         tmp = open(filename.c_str(), O_WRONLY);
 
@@ -69,10 +77,18 @@ namespace ARC
         return (s_res);
     }
 
-    void IPC::WriteFifo(int id, std::string msg)
+    /*
+    * Writes a message in a fifo file
+    * If no id is given, it automatically writes in the reception file
+    */
+    void IPC::WriteFifo(const std::string &msg, int id)
     {
         int tmp;
-        std::string filename = "res/kitchen" + std::to_string(id);
+        std::string filename;
+        if (id == -1)
+            filename = "res/reception";
+        else
+            filename = "res/kitchen" + std::to_string(id);
         std::string tmp_msg = msg + "\n";
 
         tmp = open(filename.c_str(), O_WRONLY);
@@ -85,4 +101,5 @@ namespace ARC
         write(tmp, tmp_msg.c_str(), tmp_msg.length());
         close(tmp);
     }
+
 }

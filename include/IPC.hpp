@@ -27,8 +27,8 @@ namespace ARC
 
             int MkFifo(int id);
             int RmFifo(int id);
-            std::string ReadFifo(int id);
-            void WriteFifo(int id, std::string msg);
+            std::string ReadFifo(int id = -1);
+            void WriteFifo(const std::string &msg, int id = -1);
 
         private:
     };

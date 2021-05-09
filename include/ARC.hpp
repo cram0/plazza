@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <regex>
+#include <cctype>
 
 namespace ARC {
 
@@ -33,7 +34,7 @@ namespace ARC {
     void to_upper(std::string &string);
     void to_lower(std::string &string);
     std::vector<std::string> split(std::string str, std::string token);
-    int fork();
+    bool is_digit(const std::string &string);
 
 };
 

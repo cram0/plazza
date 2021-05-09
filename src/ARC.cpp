@@ -39,4 +39,11 @@ namespace ARC
         return result;
     }
 
+    bool is_digit(const std::string &string) {
+        std::for_each(string.begin(), string.end(), [](const char &c) {
+            if (!isdigit(c)) { return (false); }
+        });
+        return (true);
+    }
+
 } // namespace ARC

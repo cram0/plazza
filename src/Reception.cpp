@@ -181,7 +181,7 @@ namespace ARC
     bool Reception::IsKitchenReady(int kitchen_id)
     {
         std::string info = _ipc.ReadFifo(kitchen_id);
-        // TODO 
+        // TODO
 
     }
 
