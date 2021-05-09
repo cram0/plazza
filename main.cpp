@@ -7,11 +7,20 @@
 
 #include "Plazza.hpp"
 #include "Reception.hpp"
+#include "PzArgparser.hpp"
 
 int main(int argc, char **argv)
 {
     ARC::Reception recep;
-    recep.Start();
+    try {
+        ARC::PzArgparser parser(argc, argv);
+        recep.Start();
+    } catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        std::exit(84);
+    }
+
 
     return (0);
 }
