@@ -17,24 +17,25 @@
 #include "Order.hpp"
 #include "Kitchen.hpp"
 #include "IPC.hpp"
+#include "Process.hpp"
 
 namespace ARC
 {
     class Reception
     {
         public:
-            Reception();
+            Reception(float cook_time, int cook_per_kitchen, int ingredient_mult);
             ~Reception();
 
             void Start(); // Main loop
 
-            void MkFifoReception();
             std::string GetOrder(); // Get the line typed in by the user
             bool IsValidPizzaType(const std::string &type); // Checks if pizza type exists
             bool ParseIndividualOrder(const std::string &order); // Parse one chunk of the order
             bool ParseFullOrder(const std::string &order); // Parse pizza order
             void PrintOrder(const std::string &order); // Print pizza order
             bool IsValidOrder(const std::string &order); // Checks if order is valid with regex
+            bool IsExitCommand(const std::string &command); // Checks if the order isnt an order but a command instead
 
             ARC::PizzaType GetPizzaType(const std::string &type);
             ARC::PizzaSize GetPizzaSize(const std::string &size);
@@ -42,9 +43,6 @@ namespace ARC
 
             ARC::Order GenerateOrder(const std::string &order, int id); // Generate an Order object for the kitchen to handle
             bool IsKitchenReady(int kitchen_id);
-            void SendPizza(ARC::PizzaType type, ARC::PizzaSize size); // Sends pizza to a kitchen
-            void HandleOrder(ARC::Order &order); // Handle order object
-
 
             void ManageKitchen();
 
@@ -56,9 +54,15 @@ namespace ARC
         private:
             std::unordered_map<PizzaType, std::string> _pizzaTypes;
             std::unordered_map<PizzaSize, std::string> _pizzaSizes;
-            std::vector<int> _kitchens;
-            int _order_id;
+
+            std::vector<ARC::Kitchen *> _kitchens;
+
             ARC::IPC _ipc;
+            int _order_id;
+
+            float _cook_time;
+            int _cook_per_kitchen;
+            int _ingredient_multiplier;
     };
 }
 

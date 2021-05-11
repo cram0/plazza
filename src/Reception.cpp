@@ -9,59 +9,43 @@
 
 namespace ARC
 {
-    Reception::Reception()
+    Reception::Reception(float cook_time, int cook_per_kitchen, int ingredient_mult)
+    : _cook_time(cook_time), _cook_per_kitchen(cook_per_kitchen), _ingredient_multiplier(ingredient_mult)
     {
         InitPizzaTypesList();
         InitPizzaSizesList();
         _order_id = InitOrderId();
-        MkFifoReception();
+        _ipc.MkFifo();
     }
 
     Reception::~Reception()
     {
-
+        _ipc.RmFifo();
     }
 
     void Reception::Start()
     {
-        int pid = -2;
 
         while (42) {
-            if (pid == 0) { // Child Process
-                // Check le fifo de sa kitchen
-                // ...
-            }
-            else { // Parent process
-                ARC::Order handle_me;
-                std::cout << ">> ";
-                std::string order = GetOrder();
-                if (IsValidOrder(order) && ParseFullOrder(order)) {
-                    std::cout << "Your order is valid, sending it to our kitchens ..." << std::endl;
-                    handle_me = GenerateOrder(order, _order_id);
-                    HandleOrder(handle_me);
-                }
-                else {
-                    std::cout << "Your order is not valid, check the menu and come back later you pussy" << std::endl;
-                }
-                ManageKitchen();
+            ARC::Order handle_me;
+            std::cout << ">> ";
+            std::string order = GetOrder();
 
-                SetOrderId(++_order_id);
+            if (IsValidOrder(order) && ParseFullOrder(order)) {
+                std::cout << "Your order is valid, sending it to our kitchens ..." << std::endl;
+                handle_me = GenerateOrder(order, _order_id);
+                _kitchens.push_back(new Kitchen(_order_id, _cook_per_kitchen));
             }
+            else if (IsExitCommand(order)) { break; }
+            else {
+                std::cout << "Your order is not valid, check the menu and come back later you pussy" << std::endl;
+            }
+
+            SetOrderId(++_order_id);
         }
     }
 
-    void Reception::MkFifoReception()
-    {
-        int tmp;
-        std::string filename = "res/reception";
 
-        tmp = mkfifo(filename.c_str(), 0666);
-
-        if (tmp == -1) {
-            std::cerr << "Couldn't create FIFO file for reception" << std::endl;
-            std::exit(84);
-        }
-    }
 
     std::string Reception::GetOrder()
     {
@@ -131,6 +115,15 @@ namespace ARC
         return (std::regex_match(order, pattern));
     }
 
+    bool Reception::IsExitCommand(const std::string &command)
+    {
+        if (command.compare("exit") == 0) {
+            std::cout << "Exiting plazza ..." << std::endl;
+            return (true);
+        }
+        return (false);
+    }
+
     ARC::PizzaType Reception::GetPizzaType(const std::string &type)
     {
         std::string tmp_type = type;
@@ -180,32 +173,12 @@ namespace ARC
 
     bool Reception::IsKitchenReady(int kitchen_id)
     {
-        std::string info = _ipc.ReadFifo(kitchen_id);
-        // TODO
+        _ipc.WriteFifo("is_ready", kitchen_id);
+        usleep(100);
+        std::string test = _ipc.ReadFifo();
 
-    }
-
-    void Reception::SendPizza(ARC::PizzaType type, ARC::PizzaSize size)
-    {
-        for (auto &k : _kitchens) {
-            if (IsKitchenReady(k)) {
-                // SendPizzuh
-            }
-        }
-    }
-
-    void Reception::HandleOrder(ARC::Order &order)
-    {
-        while (!order.getPizzas().empty()) {
-            ARC::PizzaType type = order.getPizzas().front().GetType();
-            ARC::PizzaSize size = order.getPizzas().front().GetSize();
-            SendPizza(type, size);
-        }
-    }
-
-    void Reception::ManageKitchen()
-    {
-
+        if (test.compare("ready")) {return true;}
+        return false;
     }
 
     void Reception::InitPizzaSizesList()

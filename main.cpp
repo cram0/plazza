@@ -8,12 +8,13 @@
 #include "Plazza.hpp"
 #include "Reception.hpp"
 #include "PzArgparser.hpp"
+#include "PzSignal.hpp"
 
 int main(int argc, char **argv)
 {
-    ARC::Reception recep;
     try {
         ARC::PzArgparser parser(argc, argv);
+        ARC::Reception recep(std::atof(argv[1]), std::atoi(argv[2]), std::atoi(argv[3]));
         recep.Start();
     } catch(const std::exception& e)
     {

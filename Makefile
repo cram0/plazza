@@ -19,7 +19,7 @@ CXXFLAGS    +=      -I./include
 all         :       $(NAME)
 
 $(NAME)     :       $(OBJ)
-					g++ $(CXXFLAGS) -o $(NAME) $(OBJ) -g -O0
+					g++ $(CXXFLAGS) -o $(NAME) $(OBJ) -g -O0 -lpthread
 
 clean       :
 					find . -name "*.o" -type f -delete

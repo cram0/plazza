@@ -25,8 +25,8 @@ namespace ARC
             IPC();
             ~IPC();
 
-            int MkFifo(int id);
-            int RmFifo(int id);
+            int MkFifo(int id = -1);
+            int RmFifo(int id = -1);
             std::string ReadFifo(int id = -1);
             void WriteFifo(const std::string &msg, int id = -1);
 

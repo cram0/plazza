@@ -8,26 +8,34 @@
 #ifndef KITCHEN_HPP_
 #define KITCHEN_HPP_
 
-#include <vector>
-#include <thread>
-#include <mutex>
-
-#include "Pizza.hpp"
 #include "Cook.hpp"
-#include "Mutex.hpp"
+#include "IPC.hpp"
 
 namespace ARC
 {
     class Kitchen {
         public:
-            Kitchen();
+            Kitchen(int id, int nb_cook, int multiplier);
             ~Kitchen();
 
+            int getPid();
+            int getId();
+            void setId(int id);
+            void update();
+
+            void PopulateCooks(int count);
+
+        protected:
         private:
-            std::vector<ARC::PizzaType> _pizzasOrdered;
-            ARC::Mutex _mtx;
-            int _restockTimer;
+            pid_t _pid;
+            int _id;
+            int _nb_cook;
+            int _cook_multiplier;
+
+            std::vector<ARC::Cook *> _cooks;
+            ARC::IPC _ipc;
     };
-}
+
+} // namespace ARC
 
 #endif /* !KITCHEN_HPP_ */

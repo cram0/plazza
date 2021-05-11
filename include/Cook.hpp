@@ -8,15 +8,26 @@
 #ifndef COOK_HPP_
 #define COOK_HPP_
 
-class Cook {
-    public:
-        Cook();
-        ~Cook();
+#include "ARC.hpp"
 
-        bool isAvailable() const;
+#include <chrono>
+#include <thread>
 
-    private:
-        int _timerWorking;
-};
+namespace ARC
+{
+    class Cook {
+        public:
+            Cook(int _cookMultiplier);
+            ~Cook();
+            void setAvailability(bool state);
+
+            bool isAvailable() const;
+            void cookPizza(ARC::PizzaType type, ARC::PizzaSize size);
+
+        private:
+            int _cookMultiplier;
+            bool _available;
+    };
+} // namespace ARC
 
 #endif /* !COOK_HPP_ */
