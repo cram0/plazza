@@ -31,12 +31,12 @@ namespace ARC
 
     int Kitchen::getPid()
     {
-        return _pid;
+        return (_pid);
     }
 
     int Kitchen::getId()
     {
-        return _id;
+        return (_id);
     }
 
     void Kitchen::setId(int id)
@@ -47,7 +47,9 @@ namespace ARC
     void Kitchen::update()
     {
         while (42) {
-            _ipc.WriteFifo("" + std::to_string(_id));
+            sleep(1);
+            int cooks_available = GetAvailableCooksCount();
+            _ipc.WriteFifo("INFO " + std::to_string(_id) + " " + std::to_string(cooks_available));
         }
     }
 
@@ -56,6 +58,15 @@ namespace ARC
         for (int i = 0; i < count; i++) {
             _cooks.emplace_back(new Cook(_cook_multiplier));
         }
+    }
+
+    int Kitchen::GetAvailableCooksCount()
+    {
+        int count = 0;
+        for (const auto &c : _cooks) {
+            if (c->isAvailable()) { count++; }
+        }
+        return (count);
     }
 
 } // namespace ARC

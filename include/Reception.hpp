@@ -18,6 +18,7 @@
 #include "Kitchen.hpp"
 #include "IPC.hpp"
 #include "Process.hpp"
+#include "PzError.hpp"
 
 namespace ARC
 {
@@ -35,7 +36,11 @@ namespace ARC
             bool ParseFullOrder(const std::string &order); // Parse pizza order
             void PrintOrder(const std::string &order); // Print pizza order
             bool IsValidOrder(const std::string &order); // Checks if order is valid with regex
-            bool IsExitCommand(const std::string &command); // Checks if the order isnt an order but a command instead
+            bool IsExitCommand(const std::string &command); // Checks if the order isnt an order but an exit command instead
+            bool IsStatusCommand(const std::string &command); // Checks if the order isnt an order but a status request instead
+
+            void GetKitchenInfo();
+            void CloseAllRemainingKitchen();
 
             ARC::PizzaType GetPizzaType(const std::string &type);
             ARC::PizzaSize GetPizzaSize(const std::string &size);

@@ -5,7 +5,6 @@
 ** main
 */
 
-#include "Plazza.hpp"
 #include "Reception.hpp"
 #include "PzArgparser.hpp"
 #include "PzSignal.hpp"

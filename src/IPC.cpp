@@ -26,7 +26,7 @@ namespace ARC
     */
     int IPC::MkFifo(int id)
     {
-        int tmp;
+        int fd;
         std::string filename;
 
         if (id == -1)
@@ -34,14 +34,14 @@ namespace ARC
         else
             filename = "res/kitchen" + std::to_string(id);
 
-        tmp = mkfifo(filename.c_str(), 0666);
+        fd = mkfifo(filename.c_str(), 0666);
 
-        if (tmp == -1) {
+        if (fd == -1) {
             std::cerr << "Couldn't create FIFO file for kitchen id : " << std::to_string(id) << std::endl;
             std::exit(84);
         }
 
-        return (tmp);
+        return (fd);
     }
 
     /*
@@ -50,7 +50,7 @@ namespace ARC
     */
     int IPC::RmFifo(int id)
     {
-        int tmp;
+        int fd;
         std::string filename;
 
         if (id == -1)
@@ -58,14 +58,14 @@ namespace ARC
         else
             filename = "res/kitchen" + std::to_string(id);
 
-        tmp = std::remove(filename.c_str());
+        fd = std::remove(filename.c_str());
 
-        if (tmp == -1) {
+        if (fd == -1) {
             std::cerr << "Couldn't remove FIFO file for kitchen id : " << std::to_string(id) << std::endl;
             std::exit(84);
         }
 
-        return (tmp);
+        return (fd);
     }
 
     /*
@@ -74,24 +74,24 @@ namespace ARC
     */
     std::string IPC::ReadFifo(int id)
     {
-        int tmp;
-        char buffer[255] = { 0 };
+        int fd;
+        char buffer[4096] = { 0 };
         std::string filename;
         if (id == -1)
             filename = "res/reception";
         else
             filename = "res/kitchen" + std::to_string(id);
 
-        tmp = open(filename.c_str(), O_RDWR);
+        fd = open(filename.c_str(), O_RDONLY);
 
-        if (tmp == -1) {
+        if (fd == -1) {
             std::cerr << "Couldn't open FIFO file for kitchen id : " << std::to_string(id) << std::endl;
             std::exit(84);
         }
 
-        read(tmp, buffer, 254);
+        read(fd, buffer, 4095);
         std::string s_res = buffer;
-        close(tmp);
+        close(fd);
 
         return (s_res);
     }
@@ -102,23 +102,23 @@ namespace ARC
     */
     void IPC::WriteFifo(const std::string &msg, int id)
     {
-        int tmp;
+        int fd;
         std::string filename;
         if (id == -1)
             filename = "res/reception";
         else
             filename = "res/kitchen" + std::to_string(id);
-        std::string tmp_msg = msg + "\n";
+        std::string fd_msg = msg + "\n";
 
-        tmp = open(filename.c_str(), O_RDWR);
+        fd = open(filename.c_str(), O_WRONLY);
 
-        if (tmp == -1) {
+        if (fd == -1) {
             std::cerr << "Couldn't open FIFO file for kitchen id : " << std::to_string(id) << std::endl;
             std::exit(84);
         }
 
-        write(tmp, tmp_msg.c_str(), tmp_msg.length());
-        close(tmp);
+        write(fd, fd_msg.c_str(), fd_msg.length());
+        close(fd);
     }
 
 }

@@ -21,11 +21,23 @@ namespace ARC
     Reception::~Reception()
     {
         _ipc.RmFifo();
+        CloseAllRemainingKitchen();
+    }
+
+    void Reception::GetKitchenInfo()
+    {
+        std::cout << _ipc.ReadFifo() << std::endl;
+    }
+
+    void Reception::CloseAllRemainingKitchen()
+    {
+        for (auto &k : _kitchens) {
+            delete k;
+        }
     }
 
     void Reception::Start()
     {
-
         while (42) {
             ARC::Order handle_me;
             std::cout << ">> ";
@@ -34,9 +46,10 @@ namespace ARC
             if (IsValidOrder(order) && ParseFullOrder(order)) {
                 std::cout << "Your order is valid, sending it to our kitchens ..." << std::endl;
                 handle_me = GenerateOrder(order, _order_id);
-                _kitchens.push_back(new Kitchen(_order_id, _cook_per_kitchen));
+                _kitchens.push_back(new Kitchen(_order_id, _cook_per_kitchen, _ingredient_multiplier));
             }
             else if (IsExitCommand(order)) { break; }
+            else if (IsStatusCommand(order)) { GetKitchenInfo(); }
             else {
                 std::cout << "Your order is not valid, check the menu and come back later you pussy" << std::endl;
             }
@@ -45,13 +58,12 @@ namespace ARC
         }
     }
 
-
-
     std::string Reception::GetOrder()
     {
         std::string order;
 
         std::getline(std::cin, order);
+        if (!std::cin) { throw PzError(std::cerr, "./plazza : Received EOF, exiting ..."); }
 
         return (order);
     }
@@ -119,6 +131,14 @@ namespace ARC
     {
         if (command.compare("exit") == 0) {
             std::cout << "Exiting plazza ..." << std::endl;
+            return (true);
+        }
+        return (false);
+    }
+
+    bool Reception::IsStatusCommand(const std::string &command)
+    {
+        if (command.compare("status") == 0) {
             return (true);
         }
         return (false);

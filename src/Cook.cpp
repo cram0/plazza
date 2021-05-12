@@ -14,13 +14,11 @@ namespace ARC
 
     }
 
-    // DN
     Cook::~Cook()
     {
 
     }
 
-    // MB
     bool Cook::isAvailable() const
     {
         return (_available);
@@ -31,17 +29,16 @@ namespace ARC
         _available = state;
     }
 
-    // DN
     void Cook::cookPizza(ARC::PizzaType type, ARC::PizzaSize size)
     {
-        _available = false;
+        setAvailability(false);
         auto start_time = std::chrono::high_resolution_clock::now();
-        auto end_time = start_time + std::chrono::milliseconds((int)type + ((int)size));
+        auto end_time = start_time + std::chrono::milliseconds(((int)type + ((int)size)) * 1000);
 
         do {
             std::this_thread::yield();
         } while (std::chrono::high_resolution_clock::now() < end_time);
-        _available = true;
+        setAvailability(true);
     }
 
 } // namespace ARC

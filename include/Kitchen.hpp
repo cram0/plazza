@@ -24,6 +24,7 @@ namespace ARC
             void update();
 
             void PopulateCooks(int count);
+            int GetAvailableCooksCount();
 
         protected:
         private:

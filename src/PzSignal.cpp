@@ -12,7 +12,7 @@ namespace ARC
 {
     PzSignal::PzSignal()
     {
-        std::signal(SIGCONT, &GetSigCont);
+        signal(SIGCONT, &GetSigCont);
     }
 
     PzSignal::~PzSignal()
@@ -23,7 +23,7 @@ namespace ARC
     void PzSignal::GetSigCont(int code)
     {
         std::cout << "Received CTRL + C" << std::endl;
-
+        exit(code);
     }
 
 } // namespace ARC
