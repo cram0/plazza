@@ -8,6 +8,8 @@
 #ifndef KITCHEN_HPP_
 #define KITCHEN_HPP_
 
+#include <signal.h>
+
 #include "Cook.hpp"
 #include "IPC.hpp"
 
