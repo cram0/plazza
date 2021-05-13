@@ -17,9 +17,6 @@ namespace ARC
             PopulateCooks(nb_cook);
             if (_pid < 0)
                 std::cerr << "Error: fork failed\n" << std::endl;
-        }
-
-        if (this->getPid() == 0) {
             update();
         }
     }
@@ -27,6 +24,7 @@ namespace ARC
     Kitchen::~Kitchen()
     {
         _ipc.RmFifo(_id);
+        kill(_pid, SIGKILL);
     }
 
     int Kitchen::getPid()
@@ -47,8 +45,8 @@ namespace ARC
     void Kitchen::update()
     {
         while (42) {
-            sleep(1);
             int cooks_available = GetAvailableCooksCount();
+            sleep(1);
             _ipc.WriteFifo("INFO " + std::to_string(_id) + " " + std::to_string(cooks_available));
         }
     }
