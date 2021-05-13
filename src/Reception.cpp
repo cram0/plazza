@@ -16,7 +16,7 @@ namespace ARC
         InitPizzaSizesList();
         _order_id = InitOrderId();
         _ipc.MkFifo();
-        _t_getkitcheninfo = std::thread(&Reception::GetKitchenInfo, this);
+        _t_getkitcheninfo = std::thread(&Reception::GetKitchenMessages, this);
     }
 
     Reception::~Reception()
@@ -25,10 +25,45 @@ namespace ARC
         CloseAllRemainingKitchen();
     }
 
-    void Reception::GetKitchenInfo()
+    void Reception::UpdateKitchenStateList(const std::string &id, const std::string &state)
+    {
+        for (auto &ks : _kitchens_state) {
+            if (ks.first == std::atoi(id.c_str())) { ks.second = state; }
+        }
+    }
+
+    void Reception::ReadInformationMessage(const std::string &message)
+    {
+        std::vector<std::string> message_tab = ARC::split(message, " ");
+        UpdateKitchenStateList(message_tab[1], message_tab[2]);
+    }
+
+    bool Reception::IsInformationMessage(const std::string &message)
+    {
+        if ((message.length() >= 4) && (strncmp(message.c_str(), "INFO", 4) == 0)) {
+            return (true);
+        }
+        return (false);
+    }
+
+    void Reception::ParseMessage(const std::string &message)
+    {
+        if (IsInformationMessage(message)) { ReadInformationMessage(message); }
+    }
+
+    void Reception::HandleMessages(const std::string &messages)
+    {
+        std::vector<std::string> messages_tab = ARC::split(messages, "\n");
+        for (size_t i = 0; i < messages_tab.size(); i++) {
+            ParseMessage(messages_tab[i]);
+        }
+    }
+
+    void Reception::GetKitchenMessages()
     {
         while (42) {
-            
+            std::string kitchen_messages = _ipc.ReadFifo();
+            HandleMessages(kitchen_messages);
         }
     }
 
@@ -36,6 +71,13 @@ namespace ARC
     {
         for (auto &k : _kitchens) {
             delete k;
+        }
+    }
+
+    void Reception::TestFunction()
+    {
+        for (auto &ks : _kitchens_state) {
+            std::cout << "Kitchen id " << std::to_string(ks.first) << " has this many cooks : " << ks.second << std::endl;
         }
     }
 
@@ -49,14 +91,15 @@ namespace ARC
                 std::cout << "Your order is valid, sending it to our kitchens ..." << std::endl;
                 handle_me = GenerateOrder(order, _order_id);
                 _kitchens.push_back(new Kitchen(_order_id, _cook_per_kitchen, _ingredient_multiplier));
+                _kitchens_state.emplace(_order_id, "");
             }
             else if (IsExitCommand(order)) { break; }
-            else if (IsStatusCommand(order)) { GetKitchenInfo(); }
+            else if (IsStatusCommand(order)) { GetKitchenMessages(); }
+            else if (order.compare("test") == 0) { TestFunction(); }
             else {
                 std::cout << "Your order is not valid, check the menu and come back later you pussy" << std::endl;
             }
 
-            // _t_getkitcheninfo.join();
             SetOrderId(++_order_id);
         }
     }

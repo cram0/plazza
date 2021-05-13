@@ -85,7 +85,7 @@ namespace ARC
         fd = open(filename.c_str(), O_RDONLY);
 
         if (fd == -1) {
-            std::cout << "Couldn't open FIFO file for kitchen id : " << std::to_string(id) << std::endl;
+            std::cerr << "Couldn't open FIFO file for kitchen id : " << std::to_string(id) << std::endl;
             std::exit(84);
         }
 
