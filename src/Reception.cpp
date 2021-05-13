@@ -16,6 +16,7 @@ namespace ARC
         InitPizzaSizesList();
         _order_id = InitOrderId();
         _ipc.MkFifo();
+        _t_getkitcheninfo = std::thread(&Reception::GetKitchenInfo, this);
     }
 
     Reception::~Reception()
@@ -26,7 +27,9 @@ namespace ARC
 
     void Reception::GetKitchenInfo()
     {
-        std::cout << _ipc.ReadFifo() << std::endl;
+        while (42) {
+            
+        }
     }
 
     void Reception::CloseAllRemainingKitchen()
@@ -42,7 +45,6 @@ namespace ARC
             ARC::Order handle_me;
             std::cout << ">> ";
             std::string order = GetOrder();
-
             if (IsValidOrder(order) && ParseFullOrder(order)) {
                 std::cout << "Your order is valid, sending it to our kitchens ..." << std::endl;
                 handle_me = GenerateOrder(order, _order_id);
@@ -54,6 +56,7 @@ namespace ARC
                 std::cout << "Your order is not valid, check the menu and come back later you pussy" << std::endl;
             }
 
+            // _t_getkitcheninfo.join();
             SetOrderId(++_order_id);
         }
     }

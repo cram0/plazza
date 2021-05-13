@@ -28,12 +28,12 @@ namespace ARC
         kill(_pid, SIGKILL);
     }
 
-    int Kitchen::getPid()
+    int Kitchen::getPid() const
     {
         return (_pid);
     }
 
-    int Kitchen::getId()
+    int Kitchen::getId() const
     {
         return (_id);
     }

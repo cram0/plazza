@@ -89,11 +89,15 @@ namespace ARC
             std::exit(84);
         }
 
-        read(fd, buffer, 4096);
-        close(fd);
-        std::string s_res = buffer;
-
-        return (s_res);
+        if (read(fd, buffer, 4096) == 0) {
+            close(fd);
+            return (std::string(""));
+        }
+        else {
+            close(fd);
+            std::string s_res = buffer;
+            return (s_res);
+        }
     }
 
     /*

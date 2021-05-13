@@ -20,8 +20,8 @@ namespace ARC
             Kitchen(int id, int nb_cook, int multiplier);
             ~Kitchen();
 
-            int getPid();
-            int getId();
+            int getPid() const ;
+            int getId() const ;
             void setId(int id);
             void update();
 

@@ -70,6 +70,8 @@ namespace ARC
             float _cook_time;
             int _cook_per_kitchen;
             int _ingredient_multiplier;
+
+            std::thread _t_getkitcheninfo;
     };
 }
 
