@@ -12,6 +12,7 @@ namespace ARC
     Kitchen::Kitchen(int id, int nb_cook, int multiplier) : _id(id), _nb_cook(nb_cook), _cook_multiplier(multiplier)
     {
         _pid = fork();
+        signal(SIGPIPE, SIG_IGN);
         if (this->getPid() == 0) {
             _ipc.MkFifo(_id);
             PopulateCooks(nb_cook);
@@ -46,7 +47,7 @@ namespace ARC
     {
         while (42) {
             int cooks_available = GetAvailableCooksCount();
-            sleep(1);
+            usleep(500000);
             _ipc.WriteFifo("INFO " + std::to_string(_id) + " " + std::to_string(cooks_available));
         }
     }

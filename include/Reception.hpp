@@ -62,6 +62,8 @@ namespace ARC
 
             std::vector<ARC::Kitchen *> _kitchens;
 
+            std::unordered_map<int, std::string> _kitchens_state;
+
             ARC::IPC _ipc;
             int _order_id;
 
