@@ -10,6 +10,8 @@
 
 #include <signal.h>
 
+#include <map>
+
 #include "Cook.hpp"
 #include "IPC.hpp"
 
@@ -25,8 +27,19 @@ namespace ARC
             void setId(int id);
             void update();
 
+            void CookPizza(ARC::PizzaType type, ARC::PizzaSize size);
+            void CookSomething(int type, int size);
+
+            void ReadCookMessage(const std::string &message);
+            bool IsCookMessage(const std::string &message);
+            bool IsInformationMessage(const std::string &message);
+            void ParseMessage(const std::string &message);
+            void HandleMessage(const std::vector<std::string> &tab);
+            void UpdatePizzaBuffer();
+            void CheckForAvailableCooks();
             void PopulateCooks(int count);
-            int GetAvailableCooksCount();
+            void InitBufferList(int count);
+            int GetBufferEmptySlotCount();
 
         protected:
         private:
@@ -35,7 +48,10 @@ namespace ARC
             int _nb_cook;
             int _cook_multiplier;
 
-            std::vector<ARC::Cook *> _cooks;
+            // std::vector<ARC::Cook *> _cooks;
+            std::vector<std::pair<ARC::Cook *, std::thread>> _cooks;
+            std::vector<std::pair<int, int>> _pizza_buffer;
+
             ARC::IPC _ipc;
     };
 

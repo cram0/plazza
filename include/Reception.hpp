@@ -55,6 +55,7 @@ namespace ARC
 
             ARC::Order GenerateOrder(const std::string &order, int id); // Generate an Order object for the kitchen to handle
             bool IsKitchenReady(int kitchen_id);
+            void DispatchOrder(ARC::Order &order); // Dispatches order between all the kitchens
 
             void ManageKitchen();
 
@@ -72,7 +73,7 @@ namespace ARC
 
             std::vector<ARC::Kitchen *> _kitchens;
 
-            std::unordered_map<int, std::string> _kitchens_state;
+            std::map<int, std::string> _kitchens_state;
 
             ARC::IPC _ipc;
             int _order_id;

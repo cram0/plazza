@@ -121,11 +121,7 @@ namespace ARC
             std::exit(84);
         }
 
-        int tmp = write(fd, fd_msg.c_str(), fd_msg.length());
-
-        if (tmp == -1) {
-            std::fprintf(stdout, "Couldn't write to FIFO file on kitchen id : %s\n", std::to_string(id).c_str());
-        }
+        write(fd, fd_msg.c_str(), fd_msg.length());
 
         close(fd);
     }

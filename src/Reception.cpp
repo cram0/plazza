@@ -12,6 +12,7 @@ namespace ARC
     Reception::Reception(float cook_time, int cook_per_kitchen, int ingredient_mult)
     : _cook_time(cook_time), _cook_per_kitchen(cook_per_kitchen), _ingredient_multiplier(ingredient_mult)
     {
+        signal(SIGPIPE, SIG_IGN);
         InitPizzaTypesList();
         InitPizzaSizesList();
         _order_id = InitOrderId();
@@ -90,8 +91,7 @@ namespace ARC
             if (IsValidOrder(order) && ParseFullOrder(order)) {
                 std::cout << "Your order is valid, sending it to our kitchens ..." << std::endl;
                 handle_me = GenerateOrder(order, _order_id);
-                _kitchens.push_back(new Kitchen(_order_id, _cook_per_kitchen, _ingredient_multiplier));
-                _kitchens_state.emplace(_order_id, "");
+                DispatchOrder(handle_me);
             }
             else if (IsExitCommand(order)) { break; }
             else if (IsStatusCommand(order)) { GetKitchenMessages(); }
@@ -99,8 +99,30 @@ namespace ARC
             else {
                 std::cout << "Your order is not valid, check the menu and come back later you pussy" << std::endl;
             }
+        }
+    }
 
-            SetOrderId(++_order_id);
+    // TODO FIX ÇA
+    void Reception::DispatchOrder(ARC::Order &order)
+    {
+        for (auto it = std::begin(_kitchens_state); !order.getPizzas().empty(); ++it) {
+            std::cout << "DISPATCH ORDER .. " << std::endl;
+            ARC::PizzaType type = order.getPizzas().begin().base()->GetType();
+            ARC::PizzaSize size = order.getPizzas().begin().base()->GetSize();
+
+            if (it == std::end(_kitchens_state)) {
+                std::cout << "CREATING NEW KITCHEN .." << std::endl;
+                _kitchens.push_back(new Kitchen(_order_id, _cook_per_kitchen, _ingredient_multiplier));
+                _kitchens_state.emplace(_order_id, std::to_string(_cook_per_kitchen));
+                it = std::begin(_kitchens_state);
+                SetOrderId(++_order_id);
+            }
+
+            if (std::atoi((*it).second.c_str()) >= 1) {
+                std::cout << "FOUND A FREE KITCHEN .." << std::endl;
+                _ipc.WriteFifo("COOK " + std::to_string(type) + " " + std::to_string(size), (*it).first);
+                order.removePizza(order.getPizzas().begin());
+            }
         }
     }
 

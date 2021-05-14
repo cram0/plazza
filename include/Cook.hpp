@@ -27,6 +27,7 @@ namespace ARC
         private:
             int _cookMultiplier;
             bool _available;
+            std::thread _t_cook;
     };
 } // namespace ARC
 
