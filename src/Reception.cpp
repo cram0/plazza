@@ -36,6 +36,7 @@ namespace ARC
     void Reception::ReadInformationMessage(const std::string &message)
     {
         std::vector<std::string> message_tab = ARC::split(message, " ");
+        std::cout << "Read info message : " + message_tab[1] + " " + message_tab[2] << std::endl;
         UpdateKitchenStateList(message_tab[1], message_tab[2]);
     }
 

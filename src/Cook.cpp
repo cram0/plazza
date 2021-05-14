@@ -33,14 +33,10 @@ namespace ARC
     {
         if (type == -1 || size == -1) { return; }
         setAvailability(false);
-        // auto start_time = std::chrono::high_resolution_clock::now();
-        // auto end_time = start_time + std::chrono::milliseconds(((int)type + ((int)size)) * 1000);
-
-        // do {
-        //     std::this_thread::yield();
-        // } while (std::chrono::high_resolution_clock::now() < end_time);
-        std::this_thread::sleep_for(std::chrono::seconds(20));
+        std::cout << "COOK AVAILABLE ? " << _available << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(type * size));
         setAvailability(true);
+        std::cout << "COOK AVAILABLE ? " << _available << std::endl;
     }
 
 } // namespace ARC

@@ -39,9 +39,7 @@ namespace ARC
             void InitBufferList(int count);
             int GetBufferEmptySlotCount();
 
-            ARC::Cook &GetAvailableCook();
-
-            int Test();
+            ARC::Cook *GetAvailableCook();
 
         protected:
         private:
@@ -50,10 +48,7 @@ namespace ARC
             int _nb_cook;
             int _cook_multiplier;
 
-            // std::vector<ARC::Cook *> _cooks;
-            // std::vector<std::pair<ARC::Cook *, std::thread>> _cooks;
-
-            std::vector<ARC::Cook> _cooks;
+            std::vector<ARC::Cook *> _cooks;
             ARC::ThreadPool _cooks_pool;
             std::vector<std::pair<int, int>> _pizza_buffer;
 

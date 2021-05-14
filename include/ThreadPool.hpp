@@ -19,7 +19,7 @@ namespace ARC
             ThreadPool(int count);
             ~ThreadPool();
 
-            void AddCooks(ARC::Cook &cook, int type = -1, int size = -1);
+            void AddCooks(ARC::Cook *cook, int type = -1, int size = -1);
             int GetAvailableCooksCount();
 
         private:

@@ -47,53 +47,30 @@ namespace ARC
     // TODO FIX ÇA
     void Kitchen::CheckForAvailableCooks()
     {
-        // for (auto &c : _cooks) {
-        //     if (c.first->isAvailable()) {
-        //         for (auto &pb : _pizza_buffer) {
-        //             if (pb.first != -1) {
-        //                 c.first->setAvailability(false);
-        //                 c.second = std::thread(&Kitchen::CookSomething, this, pb.first, pb.second);
-        //                 c.second.join();
-        //                 // c.second = std::thread(&Kitchen::CookSomething, this, -1, -1);
-        //                 c.first->setAvailability(true);
-        //                 pb.first = -1;
-        //                 pb.second = -1;
-        //             }
-        //         }
-        //     }
-        // }
+        std::cout << "Kitchen ID "<< std::to_string(_id) << " checking for cooks .." << std::endl;
         if (_cooks_pool.GetAvailableCooksCount() >= 1) {
             for (auto &pb : _pizza_buffer) {
                 if (pb.first != -1) {
-                    ARC::Cook &cook = GetAvailableCook();
-                    cook.setAvailability(false);
+                    ARC::Cook *cook = GetAvailableCook();
                     _cooks_pool.AddCooks(cook, pb.first, pb.second);
-                    cook.setAvailability(true);
                     pb.first = -1;
                     pb.second = -1;
+                    break;
                 }
             }
         }
     }
 
-    int Kitchen::Test()
-    {
-        int count = 0;
-        for (auto &c : _cooks) {
-            if (c.isAvailable()) { count++; }
-        }
-        return count;
-    }
-
     void Kitchen::update()
     {
         while (42) {
-            usleep(500000);
             UpdatePizzaBuffer();
+            usleep(1000);
             CheckForAvailableCooks();
+            usleep(1000);
             int buffer_slot_count = GetBufferEmptySlotCount();
-            int available_cooks = Test();
-            _ipc.WriteFifo("INFO " + std::to_string(_id) + " " + std::to_string(buffer_slot_count) + " " + std::to_string(available_cooks));
+            usleep(1000);
+            _ipc.WriteFifo("INFO " + std::to_string(_id) + " " + std::to_string(buffer_slot_count));
         }
     }
 
@@ -109,8 +86,10 @@ namespace ARC
         std::vector<std::string> message_tab = ARC::split(message, " ");
         for (auto &pb : _pizza_buffer) {
             if (pb.first == -1) {
+                std::cout << "Adding pizza to Kitchen ID " << std::to_string(_id) << " : type [" << message_tab[1] << "]" << " and size [" << message_tab[2] << "]" << std::endl;
                 pb.first = std::atoi(message_tab[1].c_str());
                 pb.second = std::atoi(message_tab[2].c_str());
+                break;
             }
         }
     }
@@ -143,7 +122,7 @@ namespace ARC
     void Kitchen::PopulateCooks(int count)
     {
         for (int i = 0; i < count; i++) {
-            _cooks.emplace_back(Cook(_cook_multiplier));
+            _cooks.emplace_back(new Cook(_cook_multiplier));
         }
     }
 
@@ -163,10 +142,10 @@ namespace ARC
         return (count);
     }
 
-    ARC::Cook &Kitchen::GetAvailableCook()
+    ARC::Cook *Kitchen::GetAvailableCook()
     {
-        for (auto &c : _cooks) {
-            if (c.isAvailable()) { return (c); }
+        for (auto c : _cooks) {
+            if (c->isAvailable()) { return (c); }
         }
         return (_cooks[0]);
     }
