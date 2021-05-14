@@ -24,7 +24,7 @@ namespace ARC
 
             std::vector<ARC::Pizza> getPizzas() const;
             void addPizza(ARC::Pizza pizza);
-            void removePizza(std::vector<ARC::Pizza>::const_iterator pizza);
+            void removePizza();
 
             int getId() const;
             void setId(int id);

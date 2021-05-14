@@ -9,7 +9,7 @@
 
 namespace ARC
 {
-    Kitchen::Kitchen(int id, int nb_cook, int multiplier) : _id(id), _nb_cook(nb_cook), _cook_multiplier(multiplier)
+    Kitchen::Kitchen(int id, int nb_cook, int multiplier) : _id(id), _nb_cook(nb_cook), _cook_multiplier(multiplier), _cooks_pool(_cook_multiplier)
     {
         _pid = fork();
         signal(SIGPIPE, SIG_IGN);
@@ -44,53 +44,56 @@ namespace ARC
         _id = id;
     }
 
-    void Kitchen::CookPizza(ARC::PizzaType type, ARC::PizzaSize size)
-    {
-        auto start_time = std::chrono::high_resolution_clock::now();
-        auto end_time = start_time + std::chrono::milliseconds(((int)type + ((int)size)) * 1000);
-
-        do {
-            std::this_thread::yield();
-        } while (std::chrono::high_resolution_clock::now() < end_time);
-    }
-
-    void Kitchen::CookSomething(int type, int size)
-    {
-        if (type == -1 || size == -1)
-            return;
-        else {
-            CookPizza((ARC::PizzaType)type, (ARC::PizzaSize)size);
-        }
-    }
-
     // TODO FIX ÇA
     void Kitchen::CheckForAvailableCooks()
     {
-        for (auto &c : _cooks) {
-            if (c.first->isAvailable()) {
-                for (auto &pb : _pizza_buffer) {
-                    if (pb.first != -1) {
-                        c.first->setAvailability(false);
-                        c.second = std::thread(&Kitchen::CookSomething, this, pb.first, pb.second);
-                        c.second = std::thread(&Kitchen::CookSomething, this, -1, -1);
-                        c.second.join();
-                        c.first->setAvailability(true);
-                        pb.first = -1;
-                        pb.second = -1;
-                    }
+        // for (auto &c : _cooks) {
+        //     if (c.first->isAvailable()) {
+        //         for (auto &pb : _pizza_buffer) {
+        //             if (pb.first != -1) {
+        //                 c.first->setAvailability(false);
+        //                 c.second = std::thread(&Kitchen::CookSomething, this, pb.first, pb.second);
+        //                 c.second.join();
+        //                 // c.second = std::thread(&Kitchen::CookSomething, this, -1, -1);
+        //                 c.first->setAvailability(true);
+        //                 pb.first = -1;
+        //                 pb.second = -1;
+        //             }
+        //         }
+        //     }
+        // }
+        if (_cooks_pool.GetAvailableCooksCount() >= 1) {
+            for (auto &pb : _pizza_buffer) {
+                if (pb.first != -1) {
+                    ARC::Cook &cook = GetAvailableCook();
+                    cook.setAvailability(false);
+                    _cooks_pool.AddCooks(cook, pb.first, pb.second);
+                    cook.setAvailability(true);
+                    pb.first = -1;
+                    pb.second = -1;
                 }
             }
         }
+    }
+
+    int Kitchen::Test()
+    {
+        int count = 0;
+        for (auto &c : _cooks) {
+            if (c.isAvailable()) { count++; }
+        }
+        return count;
     }
 
     void Kitchen::update()
     {
         while (42) {
             usleep(500000);
-            int buffer_slot_count = GetBufferEmptySlotCount();
             UpdatePizzaBuffer();
             CheckForAvailableCooks();
-            _ipc.WriteFifo("INFO " + std::to_string(_id) + " " + std::to_string(buffer_slot_count));
+            int buffer_slot_count = GetBufferEmptySlotCount();
+            int available_cooks = Test();
+            _ipc.WriteFifo("INFO " + std::to_string(_id) + " " + std::to_string(buffer_slot_count) + " " + std::to_string(available_cooks));
         }
     }
 
@@ -140,7 +143,7 @@ namespace ARC
     void Kitchen::PopulateCooks(int count)
     {
         for (int i = 0; i < count; i++) {
-            _cooks.emplace_back(std::make_pair(new ARC::Cook(_cook_multiplier), std::thread(&Kitchen::CookSomething, this, -1, -1)));
+            _cooks.emplace_back(Cook(_cook_multiplier));
         }
     }
 
@@ -158,6 +161,14 @@ namespace ARC
             if (pb.first == -1) { count++; }
         }
         return (count);
+    }
+
+    ARC::Cook &Kitchen::GetAvailableCook()
+    {
+        for (auto &c : _cooks) {
+            if (c.isAvailable()) { return (c); }
+        }
+        return (_cooks[0]);
     }
 
 } // namespace ARC

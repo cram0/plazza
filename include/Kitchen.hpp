@@ -14,6 +14,7 @@
 
 #include "Cook.hpp"
 #include "IPC.hpp"
+#include "ThreadPool.hpp"
 
 namespace ARC
 {
@@ -27,9 +28,6 @@ namespace ARC
             void setId(int id);
             void update();
 
-            void CookPizza(ARC::PizzaType type, ARC::PizzaSize size);
-            void CookSomething(int type, int size);
-
             void ReadCookMessage(const std::string &message);
             bool IsCookMessage(const std::string &message);
             bool IsInformationMessage(const std::string &message);
@@ -41,6 +39,10 @@ namespace ARC
             void InitBufferList(int count);
             int GetBufferEmptySlotCount();
 
+            ARC::Cook &GetAvailableCook();
+
+            int Test();
+
         protected:
         private:
             pid_t _pid;
@@ -49,7 +51,10 @@ namespace ARC
             int _cook_multiplier;
 
             // std::vector<ARC::Cook *> _cooks;
-            std::vector<std::pair<ARC::Cook *, std::thread>> _cooks;
+            // std::vector<std::pair<ARC::Cook *, std::thread>> _cooks;
+
+            std::vector<ARC::Cook> _cooks;
+            ARC::ThreadPool _cooks_pool;
             std::vector<std::pair<int, int>> _pizza_buffer;
 
             ARC::IPC _ipc;

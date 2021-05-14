@@ -22,12 +22,11 @@ namespace ARC
             void setAvailability(bool state);
 
             bool isAvailable() const;
-            void cookPizza(ARC::PizzaType type, ARC::PizzaSize size);
+            void cookPizza(int type, int size);
 
         private:
-            int _cookMultiplier;
             bool _available;
-            std::thread _t_cook;
+            int _cookMultiplier;
     };
 } // namespace ARC
 

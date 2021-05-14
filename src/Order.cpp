@@ -34,9 +34,10 @@ namespace ARC {
         _pizzas.emplace_back(pizza);
     }
 
-    void Order::removePizza(std::vector<ARC::Pizza>::const_iterator pizza)
+    void Order::removePizza()
     {
-        _pizzas.erase(pizza);
+        if (_pizzas.size() > 0)
+            _pizzas.erase(_pizzas.begin());
     }
 
     int Order::getId() const

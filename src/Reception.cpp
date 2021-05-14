@@ -94,7 +94,7 @@ namespace ARC
                 DispatchOrder(handle_me);
             }
             else if (IsExitCommand(order)) { break; }
-            else if (IsStatusCommand(order)) { GetKitchenMessages(); }
+            else if (IsStatusCommand(order)) { TestFunction(); }
             else if (order.compare("test") == 0) { TestFunction(); }
             else {
                 std::cout << "Your order is not valid, check the menu and come back later you pussy" << std::endl;
@@ -102,16 +102,15 @@ namespace ARC
         }
     }
 
-    // TODO FIX ÇA
     void Reception::DispatchOrder(ARC::Order &order)
     {
         for (auto it = std::begin(_kitchens_state); !order.getPizzas().empty(); ++it) {
-            std::cout << "DISPATCH ORDER .. " << std::endl;
+            // std::cout << "DISPATCH ORDER .. " << std::endl;
             ARC::PizzaType type = order.getPizzas().begin().base()->GetType();
             ARC::PizzaSize size = order.getPizzas().begin().base()->GetSize();
 
             if (it == std::end(_kitchens_state)) {
-                std::cout << "CREATING NEW KITCHEN .." << std::endl;
+                // std::cout << "CREATING NEW KITCHEN .." << std::endl;
                 _kitchens.push_back(new Kitchen(_order_id, _cook_per_kitchen, _ingredient_multiplier));
                 _kitchens_state.emplace(_order_id, std::to_string(_cook_per_kitchen));
                 it = std::begin(_kitchens_state);
@@ -119,9 +118,9 @@ namespace ARC
             }
 
             if (std::atoi((*it).second.c_str()) >= 1) {
-                std::cout << "FOUND A FREE KITCHEN .." << std::endl;
+                // std::cout << "FOUND A FREE KITCHEN .." << std::endl;
                 _ipc.WriteFifo("COOK " + std::to_string(type) + " " + std::to_string(size), (*it).first);
-                order.removePizza(order.getPizzas().begin());
+                order.removePizza();
             }
         }
     }
