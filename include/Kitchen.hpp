@@ -14,6 +14,7 @@
 #include "IPC.hpp"
 #include "ThreadPool.hpp"
 #include "Clock.hpp"
+#include "Mutex.hpp"
 
 namespace ARC
 {
@@ -50,6 +51,8 @@ namespace ARC
             std::vector<ARC::Cook> _cooks;
             ARC::ThreadPool _cooks_pool;
             std::vector<std::pair<int, int>> _pizza_buffer;
+
+            ARC::Mutex _mutex;
 
             ARC::Clock _clock;
 
