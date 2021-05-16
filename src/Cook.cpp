@@ -35,7 +35,7 @@ namespace ARC
         std::cout << "Started cooking [" << ARC::Plazza::GetPizzaTypeStr(type) << "] of size [" << ARC::Plazza::GetPizzaSizeStr(size) << "]." << std::endl;
         setAvailability(false);
         // std::cout << "Sleeping for : [" << std::to_string(type * size) << "] seconds" << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds((type * size)));
+        std::this_thread::sleep_for(std::chrono::seconds((type * size) * (int)_cookMultiplier));
         setAvailability(true);
         std::cout << "Done cooking [" << ARC::Plazza::GetPizzaTypeStr(type) << "] of size [" << ARC::Plazza::GetPizzaSizeStr(size) << "]." << std::endl;
     }
