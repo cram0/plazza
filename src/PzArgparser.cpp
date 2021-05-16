@@ -24,10 +24,27 @@ namespace ARC
 
     }
 
+    void PzArgparser::PrintUsage()
+    {
+        std::cout << "Plazza\n\n";
+        std::cout << "USAGE :\n";
+        std::cout << "\t./plazza cooking_time_multiplier number_of_cooks_per_kitchen ingredient_cooldown\n";
+        std::cout << "\nEXPLANATION :\n";
+        std::cout << "\tcooking_time_multiplier : Time multiplier for the pizzas cooking time (time between 0 and 1 is allowed)\n";
+        std::cout << "\tnumber_of_cooks_per_kitchen : Amount of cooks per kitchen\n";
+        std::cout << "\tingredient_cooldown : Cooldown in ms (milliseconds) for an ingredient to be generated in the ingredient box\n";
+        std::cout << "\nEXAMPLE :\n";
+        std::cout << "\t./plazza 2 5 2000" << std::endl;
+    }
+
     void PzArgparser::CheckArgCount(int count)
     {
-        if (count != 4)
+        if (count != 4 && count != 2)
             throw PzError(std::cerr, "./plazza : Wrong amount of argument, use -h for more info.");
+        if (count == 2) {
+            PrintUsage();
+            std::exit(0);
+        }
     }
 
     void PzArgparser::CheckCookingTime(const std::string &time)

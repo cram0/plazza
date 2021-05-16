@@ -17,7 +17,7 @@ namespace ARC
 {
     class Cook {
         public:
-            Cook(int _cookMultiplier);
+            Cook(float _cookMultiplier);
             ~Cook();
             void setAvailability(bool state);
 
@@ -26,7 +26,7 @@ namespace ARC
 
         private:
             bool _available;
-            int _cookMultiplier;
+            float _cookMultiplier;
     };
 } // namespace ARC
 

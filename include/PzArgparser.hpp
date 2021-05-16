@@ -19,8 +19,9 @@ namespace ARC
             PzArgparser(int argc, char **argv);
             ~PzArgparser();
 
-            void CheckArgCount(int count);
+            void PrintUsage();
 
+            void CheckArgCount(int count);
             void CheckCookingTime(const std::string &time);
             void CheckCPK(const std::string &count);
             void CheckIngredientRegen(const std::string &time);

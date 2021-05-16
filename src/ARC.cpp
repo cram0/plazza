@@ -46,4 +46,43 @@ namespace ARC
         return (true);
     }
 
+    namespace Plazza
+    {
+        std::string GetPizzaTypeStr(int type)
+        {
+            switch (type) {
+                case 1:
+                    return ("Regina");
+                case 2:
+                    return ("Margarita");
+                case 4:
+                    return ("Americana");
+                case 8:
+                    return ("Fantasia");
+                default:
+                    return ("UNKNOWN PIZZA");
+            }
+        }
+
+        std::string GetPizzaSizeStr(int size)
+        {
+            switch (size) {
+                case 1:
+                    return ("S");
+                case 2:
+                    return ("M");
+                case 4:
+                    return ("L");
+                case 8:
+                    return ("XL");
+                case 16:
+                    return ("XXL");
+                default:
+                    return ("UNKNOWN SIZE");
+            }
+        }
+    } // namespace Plazza
+
+
+
 } // namespace ARC

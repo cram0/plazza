@@ -33,10 +33,27 @@ namespace ARC
         }
     }
 
+    void Reception::RemoveKitchenFromKitchenStateList(const std::string &id)
+    {
+        auto it = _kitchens_state.find(std::atoi(id.c_str()));
+        if (it != _kitchens_state.end()) {
+            _kitchens_state.erase(it);
+        }
+    }
+
+    void Reception::RemoveKitchenFromKitchenList(const std::string &id)
+    {
+        for (size_t i = 0; i < _kitchens.size(); i++) {
+            if (_kitchens[i]->getId() == std::atoi(id.c_str())) {
+                delete _kitchens[i];
+            }
+        }
+    }
+
     void Reception::ReadInformationMessage(const std::string &message)
     {
         std::vector<std::string> message_tab = ARC::split(message, " ");
-        std::cout << "Read info message : " + message_tab[1] + " " + message_tab[2] << std::endl;
+        // std::cout << "Read info message : " + message_tab[1] + " " + message_tab[2] << std::endl;
         UpdateKitchenStateList(message_tab[1], message_tab[2]);
     }
 
@@ -48,9 +65,26 @@ namespace ARC
         return (false);
     }
 
+    void Reception::ReadRemoveMessage(const std::string &message)
+    {
+        std::vector<std::string> message_tab = ARC::split(message, " ");
+        // std::cout << "Read remove message : " + message_tab[1] << std::endl;
+        RemoveKitchenFromKitchenStateList(message_tab[1]);
+        RemoveKitchenFromKitchenList(message_tab[1]);
+    }
+
+    bool Reception::IsRemoveMessage(const std::string &message)
+    {
+        if ((message.length() >= 6) && (strncmp(message.c_str(), "REMOVE", 6) == 0)) {
+            return (true);
+        }
+        return (false);
+    }
+
     void Reception::ParseMessage(const std::string &message)
     {
         if (IsInformationMessage(message)) { ReadInformationMessage(message); }
+        if (IsRemoveMessage(message)) { ReadRemoveMessage(message); }
     }
 
     void Reception::HandleMessages(const std::string &messages)
@@ -76,10 +110,10 @@ namespace ARC
         }
     }
 
-    void Reception::TestFunction()
+    void Reception::StatusCheck()
     {
         for (auto &ks : _kitchens_state) {
-            std::cout << "Kitchen id " << std::to_string(ks.first) << " has this many cooks : " << ks.second << std::endl;
+            std::cout << "Kitchen ID [" << std::to_string(ks.first) << "] has [" << ks.second << "] slots available." << std::endl;
         }
     }
 
@@ -90,15 +124,14 @@ namespace ARC
             std::cout << ">> ";
             std::string order = GetOrder();
             if (IsValidOrder(order) && ParseFullOrder(order)) {
-                std::cout << "Your order is valid, sending it to our kitchens ..." << std::endl;
+                std::cout << "Your order is valid, sending it to our kitchens." << std::endl;
                 handle_me = GenerateOrder(order, _order_id);
                 DispatchOrder(handle_me);
             }
             else if (IsExitCommand(order)) { break; }
-            else if (IsStatusCommand(order)) { TestFunction(); }
-            else if (order.compare("test") == 0) { TestFunction(); }
+            else if (IsStatusCommand(order)) { StatusCheck(); }
             else {
-                std::cout << "Your order is not valid, check the menu and come back later you pussy" << std::endl;
+                std::cout << "Your order is not valid, check the menu and come back later." << std::endl;
             }
         }
     }
@@ -106,20 +139,18 @@ namespace ARC
     void Reception::DispatchOrder(ARC::Order &order)
     {
         for (auto it = std::begin(_kitchens_state); !order.getPizzas().empty(); ++it) {
-            // std::cout << "DISPATCH ORDER .. " << std::endl;
             ARC::PizzaType type = order.getPizzas().begin().base()->GetType();
             ARC::PizzaSize size = order.getPizzas().begin().base()->GetSize();
 
             if (it == std::end(_kitchens_state)) {
-                // std::cout << "CREATING NEW KITCHEN .." << std::endl;
-                _kitchens.push_back(new Kitchen(_order_id, _cook_per_kitchen, _ingredient_multiplier));
+                _kitchens.push_back(new Kitchen(_order_id, _cook_per_kitchen, _cook_time));
                 _kitchens_state.emplace(_order_id, std::to_string(_cook_per_kitchen));
                 it = std::begin(_kitchens_state);
                 SetOrderId(++_order_id);
             }
 
             if (std::atoi((*it).second.c_str()) >= 1) {
-                // std::cout << "FOUND A FREE KITCHEN .." << std::endl;
+                usleep(1000);
                 _ipc.WriteFifo("COOK " + std::to_string(type) + " " + std::to_string(size), (*it).first);
                 order.removePizza();
             }

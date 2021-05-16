@@ -36,6 +36,11 @@ namespace ARC {
     std::vector<std::string> split(std::string str, std::string token);
     bool is_digit(const std::string &string);
 
+    namespace Plazza {
+        std::string GetPizzaTypeStr(int type);
+        std::string GetPizzaSizeStr(int size);
+    }
+
 };
 
 #endif /* !ARC_HPP_ */

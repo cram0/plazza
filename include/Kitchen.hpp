@@ -10,17 +10,16 @@
 
 #include <signal.h>
 
-#include <map>
-
 #include "Cook.hpp"
 #include "IPC.hpp"
 #include "ThreadPool.hpp"
+#include "Clock.hpp"
 
 namespace ARC
 {
     class Kitchen {
         public:
-            Kitchen(int id, int nb_cook, int multiplier);
+            Kitchen(int id, int nb_cook, float multiplier);
             ~Kitchen();
 
             int getPid() const ;
@@ -39,18 +38,22 @@ namespace ARC
             void InitBufferList(int count);
             int GetBufferEmptySlotCount();
 
-            ARC::Cook *GetAvailableCook();
+            ARC::Cook &GetAvailableCook();
 
         protected:
         private:
             pid_t _pid;
             int _id;
             int _nb_cook;
-            int _cook_multiplier;
+            float _cook_multiplier;
 
-            std::vector<ARC::Cook *> _cooks;
+            std::vector<ARC::Cook> _cooks;
             ARC::ThreadPool _cooks_pool;
             std::vector<std::pair<int, int>> _pizza_buffer;
+
+            ARC::Clock _clock;
+
+            bool _should_close = false;
 
             ARC::IPC _ipc;
     };

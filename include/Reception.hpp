@@ -40,9 +40,15 @@ namespace ARC
             bool IsStatusCommand(const std::string &command); // Checks if the order isnt an order but a status request instead
 
             void UpdateKitchenStateList(const std::string &id, const std::string &state);
+            void RemoveKitchenFromKitchenStateList(const std::string &id);
+            void RemoveKitchenFromKitchenList(const std::string &id);
 
             void ReadInformationMessage(const std::string &message);
             bool IsInformationMessage(const std::string &message);
+
+            void ReadRemoveMessage(const std::string &message);
+            bool IsRemoveMessage(const std::string &message);
+
             void ParseMessage(const std::string &message);
             void HandleMessages(const std::string &messages);
             void GetKitchenMessages();
@@ -64,8 +70,7 @@ namespace ARC
             int InitOrderId();
             void SetOrderId(int id);
 
-            // TODO DEBUG FUNCTION, REMOVE AFTER WE ARE DONE
-            void TestFunction();
+            void StatusCheck();
 
         private:
             std::unordered_map<PizzaType, std::string> _pizzaTypes;

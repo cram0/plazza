@@ -21,7 +21,7 @@ namespace ARC
         }
     }
 
-    void ThreadPool::AddCooks(ARC::Cook *cook, int type, int size)
+    void ThreadPool::AddCooks(ARC::Cook &cook, int type, int size)
     {
         _pool.push_back(std::thread(&ARC::Cook::cookPizza, cook, type, size));
     }
