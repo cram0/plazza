@@ -9,6 +9,7 @@
 #define RECEPTION_HPP_
 
 #include <string>
+#include <cstring>
 #include <iostream>
 #include <unordered_map>
 #include <fstream>

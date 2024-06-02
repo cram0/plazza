@@ -59,7 +59,7 @@ namespace ARC
 
     bool Reception::IsInformationMessage(const std::string &message)
     {
-        if ((message.length() >= 4) && (strncmp(message.c_str(), "INFO", 4) == 0)) {
+        if ((message.length() >= 4) && (std::strncmp(message.c_str(), "INFO", 4) == 0)) {
             return (true);
         }
         return (false);
@@ -75,7 +75,7 @@ namespace ARC
 
     bool Reception::IsRemoveMessage(const std::string &message)
     {
-        if ((message.length() >= 6) && (strncmp(message.c_str(), "REMOVE", 6) == 0)) {
+        if ((message.length() >= 6) && (std::strncmp(message.c_str(), "REMOVE", 6) == 0)) {
             return (true);
         }
         return (false);

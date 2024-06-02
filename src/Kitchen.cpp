@@ -108,13 +108,13 @@ namespace ARC
 
     bool Kitchen::IsCookMessage(const std::string &message)
     {
-        if ((message.length() >= 4) && (strncmp(message.c_str(), "COOK", 4) == 0)) { return (true); }
+        if ((message.length() >= 4) && (std::strncmp(message.c_str(), "COOK", 4) == 0)) { return (true); }
         return (false);
     }
 
     bool Kitchen::IsInformationMessage(const std::string &message)
     {
-        if ((message.length() >= 4) && (strncmp(message.c_str(), "INFO", 4) == 0)) { return (true); }
+        if ((message.length() >= 4) && (std::strncmp(message.c_str(), "INFO", 4) == 0)) { return (true); }
         return (false);
     }
 

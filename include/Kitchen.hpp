@@ -8,6 +8,7 @@
 #ifndef KITCHEN_HPP_
 #define KITCHEN_HPP_
 
+#include <cstring>
 #include <signal.h>
 
 #include "Cook.hpp"

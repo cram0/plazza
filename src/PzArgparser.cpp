@@ -14,9 +14,11 @@ namespace ARC
     PzArgparser::PzArgparser(int argc, char **argv)
     {
         CheckArgCount(argc);
-        CheckCookingTime(argv[1]);
-        CheckCPK(argv[2]);
-        CheckIngredientRegen(argv[3]);
+        // TODO : Uncomment when the functions are reimplemented because for now
+        // we have an illegal instruction error
+        // CheckCookingTime(argv[1]);
+        // CheckCPK(argv[2]);
+        // CheckIngredientRegen(argv[3]);
     }
 
     PzArgparser::~PzArgparser()
